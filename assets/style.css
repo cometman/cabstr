@@ -1,0 +1,20 @@
+
+#profileContainer{
+	float: right;
+}
+#logoutButton{
+	float:right;
+}
+#headTitle{
+	text-align: center;
+	clear: right;
+}
+
+#headTitle{
+	color: yellow;
+	font-size: 40px;
+}
+
+#introP{
+	font-size: 18px;
+}

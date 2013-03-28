@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
+		<link rel="stylesheet" href="assets/style.css"
+	</head>
+	<header>
+		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+			<div id="profileContainer">
+				<p>Welcome</p>
+			</div>
+		</div>
+		<h1>Cabstr</h1>
+	</header>
+	<body>
+		<button id="fbLogin" onclick="fbLogin()">Login with Facebook</button>
+		<button>Register</button>		
+	</body>
+	<footer>
+		<div data-role="footer" data-position="fixed">
+			<h1>Cabstr - All Rights Reserved 2013 -</h1>
+		</div>
+	</footer>
+
+<script>
+
+
+
+	function fbLogin(){
+		var srtoken = "bbe000430a56b629b6ef3e24a4220cd747720e185df55c58b1182158c6d368272a4b1e02d74750cdf1145e1af48e3a2d8bb286e081299adb87133bfb49b6df08";
+
+		window.location = "http://dev.socialrest.me/fb/authenticate?state="+srtoken;
+	}
+
+	function getURLParameter(name) {
+    	return decodeURI(
+       	 (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]);
+	}
+
+	// Check to see if the FB Token is present, if so, send user to main page.  
+	if (getURLParameter("token").indexOf("null") === -1)
+	{
+		window.location = "http://127.0.0.1/~cometman/cabstr/home.html";
+
+		// Create the cookie with the users token
+		document.cookie = "fbtoken=" + getURLParameter("token");
+
+	}
+
+</script>
+</html>

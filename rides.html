@@ -1,0 +1,132 @@
+<html>
+<head>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
+	<link rel="stylesheet" href="assets/style.css">
+</head>
+
+
+<body>
+	<!-- Rides Page -->
+	<div data-role="page" id="ridePage">
+
+		<div data-role="header" data-position="fixed" data-tap-toggle="false">
+			<div id="profileContainer">
+				<a href="login.html" data-role="button" data-icon="delete" data-iconpos="notext" data-theme="c" data-inline="true" id="logoutButton">Delete</a>
+				<p id="profileName">Clayton Selby</p>				
+			</div>
+			<p id="headTitle">cabstr</p>
+			<div data-role="navbar">
+			    <ul>
+			    	<li><a href="home.html">Home</a></li>
+			        <li><a href="rides.html" class="ui-btn-active">Rides</a></li>
+			        <li><a href="createride.html">New Ride</a></li>
+			    </ul>
+			</div>
+		</div>
+		<div data-role="content" id="containerContent">
+			<ul data-role="listview" data-inset="true" id="rideContent">		    
+			</ul>	
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<h1>Cabstr - All Rights Reserved 2013 -</h1>
+		</div>	
+	</div>
+
+	<script>
+	var eventData = [];
+
+	var authToken = getCookie("fbtoken");
+
+	// Ajax call to fetch rides from social rest
+	$.ajax({
+		url: "http://dev.socialrest.me/fb/get?endpoint=414201598654633/feed&access_token="+authToken,
+		crossDomain: "true",
+		jsonp: "false",
+		headers: {"Authorization" : "bbe000430a56b629b6ef3e24a4220cd747720e185df55c58b1182158c6d368272a4b1e02d74750cdf1145e1af48e3a2d8bb286e081299adb87133bfb49b6df08"},
+		success: function(data){ 
+			// Convert the string into JSON
+			eventData = jQuery.parseJSON(data); 
+			addRidesToPage();
+			console.log(eventData);
+		}
+
+	});
+
+	// Add the rides to the page
+	function addRidesToPage()
+	{
+		for (i = 0; i < eventData.data.length; i++)
+		{
+			var link = eventData.data[i].link;
+			var message = eventData.data[i].message;
+			var time = eventData.data[i].created_time;
+
+			var userId = getRideUserId(eventData.data[i].id);
+			var userPic = getUserPicture(userId);
+
+			$("#rideContent").append("<li><a href='"+link+"'> <img src="+ userPic +"> <h2>"+message+"</h2> <p>"+time+"</p> </a> </li>");
+		}
+		$("#rideContent").listview('refresh');
+	}
+
+	// Function to get cookies
+	function getCookie(c_name){
+	    if(document.cookie.length > 0){
+	        c_start=document.cookie.indexOf(c_name + "=");
+	        if(c_start != -1 && (c_start == 0 || (document.cookie.charAt(c_start-1) === ' '))){
+	            c_start += c_name.length+1;
+	            c_end=document.cookie.indexOf(";",c_start);
+	            if(c_end == -1){c_end=document.cookie.length;}
+	            return unescape(document.cookie.substring(c_start,c_end));
+	        }
+	    }
+	    return "";
+	}
+
+	function getUserPicture(userId)
+	{
+		//var rideData;
+		var returnValue;
+		console.log("USER ID: "+userId);
+		$.ajax({
+		url: "http://dev.socialrest.me/fb/get?endpoint="+userId+"/picture&access_token="+authToken,
+		crossDomain: "true",
+		jsonp: "false",
+		async: false,
+		headers: {"Authorization" : "bbe000430a56b629b6ef3e24a4220cd747720e185df55c58b1182158c6d368272a4b1e02d74750cdf1145e1af48e3a2d8bb286e081299adb87133bfb49b6df08"},
+		success: function(data){ 
+			// Convert the string into JSON
+			var rideData = jQuery.parseJSON(data); 
+			returnValue = rideData.data.url;
+			return returnValue;
+		}
+	});
+		return returnValue;
+	}
+
+	function getRideUserId(rideId)
+	{
+		var rideData = [];
+		var returnValue;
+		$.ajax({
+		url: "http://dev.socialrest.me/fb/get?endpoint="+rideId+"&access_token="+authToken,
+		crossDomain: "true",
+		jsonp: "false",
+		async: false,
+		headers: {"Authorization" : "bbe000430a56b629b6ef3e24a4220cd747720e185df55c58b1182158c6d368272a4b1e02d74750cdf1145e1af48e3a2d8bb286e081299adb87133bfb49b6df08"},
+		success: function(data){ 
+			// Convert the string into JSON
+			rideData = jQuery.parseJSON(data); 
+			returnValue = rideData.from.id;
+			return rideData.from.id;
+		}
+
+	});
+		return returnValue;
+	}
+
+	</script>
+</body>
+</html>
